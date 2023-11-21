@@ -9,42 +9,28 @@ if (isset($_GET['country'])) {
 
     $conn = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
 
-    $stmt = $conn->prepare("SELECT * FROM countries WHERE name LIKE :country");
+    $stmt = $conn->prepare("SELECT name, continent, independence_year, head_of_state FROM countries WHERE name LIKE :country");
     $stmt->bindValue(':country', "%$country%");
     $stmt->execute();
 
     $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     if ($results) {
-        echo '<ul>';
+        echo '<table border="1">';
+        echo '<tr><th>Country Name</th><th>Continent</th><th>Independence Year</th><th>Head of State</th></tr>';
         foreach ($results as $row) {
-            echo '<li>';
-            echo '<h1>' . $row['name'] . '</h1>';
-            echo '<p>Ruled by: ' . $row['head_of_state'] . '</p>';
-            echo '</li>';
+            echo '<tr>';
+            echo '<td>' . $row['name'] . '</td>';
+            echo '<td>' . $row['continent'] . '</td>';
+            echo '<td>' . $row['independence_year'] . '</td>';
+            echo '<td>' . $row['head_of_state'] . '</td>';
+            echo '</tr>';
         }
-        echo '</ul>';
-    } else {
-        echo 'No countries found';
-    }
-} else {
-    $conn = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
-    $stmt = $conn->query("SELECT * FROM countries");
-
-    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    if ($results) {
-        echo '<ul>';
-        foreach ($results as $row) {
-            echo '<li>';
-            echo '<h1>' . $row['name'] . '</h1>';
-            echo '<p>Ruled by: ' . $row['head_of_state'] . '</p>';
-            echo '</li>';
-        }
-        echo '</ul>';
+        echo '</table>';
     } else {
         echo 'No countries found';
     }
 }
 ?>
+
 
